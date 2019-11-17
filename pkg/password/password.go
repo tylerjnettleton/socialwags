@@ -20,7 +20,7 @@ const (
 	scryptKeyLen = 32
 )
 
-func randbytes() ([]byte, error) {
+func RandBytes() ([]byte, error) {
 	// Generate a salt
 	salt := make([]byte, 16)
 	_, err := rand.Read(salt)

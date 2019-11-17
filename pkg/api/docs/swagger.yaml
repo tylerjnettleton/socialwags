@@ -13,7 +13,12 @@ definitions:
       picture_data:
         type: string
       zip_code:
-        type: string
+        type: integer
+    required:
+    - email_address
+    - last_name
+    - password
+    - zip_code
     type: object
   database.Pet:
     properties:
@@ -39,14 +44,65 @@ info:
   version: "1.0"
 paths:
   /owner:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific owner
+      parameters:
+      - description: Owner ID
+        in: query
+        name: owner_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Delete a specific owner
+      tags:
+      - Owner
+    get:
+      consumes:
+      - application/json
+      description: Get a specific owner
+      parameters:
+      - description: Owner ID
+        in: query
+        name: owner_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Get a specific owner
+      tags:
+      - Owner
+    patch:
+      consumes:
+      - application/json
+      description: Update a specific owner
+      parameters:
+      - description: Update user body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateOwnerRequest'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Update a specific owner
+      tags:
+      - Owner
     put:
       consumes:
       - application/json
       description: Create a new owner
       parameters:
-      - description: Owners First Name
+      - description: Create owner request body
         in: body
         name: Body
+        required: true
         schema:
           $ref: '#/definitions/api.CreateOwnerRequest'
       produces:

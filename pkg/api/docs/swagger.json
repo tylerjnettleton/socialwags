@@ -16,6 +16,30 @@
     "basePath": "/api/v1",
     "paths": {
         "/owner": {
+            "get": {
+                "description": "Get a specific owner",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Owner"
+                ],
+                "summary": "Get a specific owner",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Owner ID",
+                        "name": "owner_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            },
             "put": {
                 "description": "Create a new owner",
                 "consumes": [
@@ -30,9 +54,61 @@
                 "summary": "Create a new owner account",
                 "parameters": [
                     {
-                        "description": "Owners First Name",
+                        "description": "Create owner request body",
                         "name": "Body",
                         "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateOwnerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            },
+            "delete": {
+                "description": "Delete a specific owner",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Owner"
+                ],
+                "summary": "Delete a specific owner",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Owner ID",
+                        "name": "owner_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            },
+            "patch": {
+                "description": "Update a specific owner",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Owner"
+                ],
+                "summary": "Update a specific owner",
+                "parameters": [
+                    {
+                        "description": "Update user body",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/api.CreateOwnerRequest"
                         }
@@ -47,6 +123,12 @@
     "definitions": {
         "api.CreateOwnerRequest": {
             "type": "object",
+            "required": [
+                "email_address",
+                "last_name",
+                "password",
+                "zip_code"
+            ],
             "properties": {
                 "email_address": {
                     "type": "string"
@@ -64,7 +146,7 @@
                     "type": "string"
                 },
                 "zip_code": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },

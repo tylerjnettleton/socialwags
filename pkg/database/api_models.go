@@ -9,13 +9,13 @@ import (
 
 type Owner struct {
 	gorm.Model
-	Email_Address string
+	Email_Address string `gorm:"unique;not null"`
 	Password string
 	Salt string
-	First_Name string
-	Last_Name string
+	First_Name string `gorm:"not null"`
+	Last_Name string `gorm:"not null"`
 	Picture_URL string
-	Zip_Code int
+	Zip_Code uint `gorm:"not null"`
 	Time time.Time
 	TimeZone string
 	Pets []Pet
