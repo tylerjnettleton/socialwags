@@ -1,0 +1,59 @@
+basePath: /api/v1
+definitions:
+  api.CreateOwnerRequest:
+    properties:
+      email_address:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      picture_data:
+        type: string
+      zip_code:
+        type: string
+    type: object
+  database.Pet:
+    properties:
+      birth_Date:
+        type: string
+      name:
+        type: string
+      ownerID:
+        type: integer
+      picture_URL:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@socialwags.com
+    name: API Support
+    url: http://www.socialwags.com/support
+  description: API documentation for the socialwags platform
+  license: {}
+  termsOfService: http://socialwags.com/terms/
+  title: SocialWags API
+  version: "1.0"
+paths:
+  /owner:
+    put:
+      consumes:
+      - application/json
+      description: Create a new owner
+      parameters:
+      - description: Owners First Name
+        in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/api.CreateOwnerRequest'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Create a new owner account
+      tags:
+      - Owner
+swagger: "2.0"

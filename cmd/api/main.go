@@ -4,7 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/swaggo/files"       // swagger embed files
+	"github.com/swaggo/gin-swagger" // gin-swagger middleware
 	"github.com/tylerjnettleton/socialwags/pkg/api"
+	_ "github.com/tylerjnettleton/socialwags/pkg/api/docs"
 	"github.com/tylerjnettleton/socialwags/pkg/database"
 )
 
@@ -26,11 +29,14 @@ func main ()  {
 	db.AutoMigrate(&database.Pack_Message{})
 
 
-
 	// Setup our router
 	r := gin.Default()
 
-	router := api.NewRouter()
+	router, err := api.NewRouter(db)
+
+	if err != nil {
+		panic("Failed to create http router")
+	}
 
 	v1 := r.Group("/api/v1")
 	{
@@ -63,6 +69,8 @@ func main ()  {
 
 
 	}
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Run()
 

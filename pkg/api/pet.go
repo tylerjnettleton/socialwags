@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	_ "github.com/tylerjnettleton/socialwags/pkg/database"
 	"net/http"
 )
 
@@ -12,10 +13,7 @@ import (
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Account ID"
-// @Success 200 {object} model.Account
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Success 200 {object} database.Pet
 func (c *Router) CreatePet(ctx *gin.Context) {
 	ctx.String(http.StatusOK, "Create Pet")
 }
