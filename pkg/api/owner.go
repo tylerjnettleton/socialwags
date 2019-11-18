@@ -24,8 +24,17 @@ type CreateOwnerRequest struct {
 	Picture_Data string `json:"picture_data" binding:"-"`
 }
 
+type UpdateOwnerRequest struct {
+	CreateOwnerRequest
+	Owner_ID uint `form:"owner_id" binding:"required"`
+}
+
 type GetOwnerRequest struct {
 	Owner_ID uint `form:"owner_id" binding:"required"`
+}
+
+type DeleteOwnerRequest struct {
+	GetOwnerRequest
 }
 
 // Create a new Owner account
@@ -120,12 +129,27 @@ func (r *Router) GetOwner(ctx *gin.Context) {
 // @Success 200
 // @Router /owner [delete]
 func (r *Router) DeleteOwner(ctx *gin.Context) {
-	var form GetOwnerRequest
+	var form DeleteOwnerRequest
 	if err := ctx.ShouldBind(&form); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.String(http.StatusMethodNotAllowed, "Not implemented")
+
+	own := database.Owner{}
+	if result := r.DB.Delete(&own, form.Owner_ID); result.Error != nil {
+		resJson := OwnerResponse{
+			Success: false,
+			Error:   nil,
+		}
+		ctx.JSON(http.StatusBadRequest, resJson)
+		return
+	}
+
+	resJson := OwnerResponse{
+		Success: true,
+		Error:   nil,
+	}
+	ctx.JSON(http.StatusOK, resJson)
 }
 
 // Update a specific `Owner`
@@ -138,11 +162,32 @@ func (r *Router) DeleteOwner(ctx *gin.Context) {
 // @Success 200
 // @Router /owner [patch]
 func (r *Router)UpdateOwner(ctx *gin.Context) {
-	var json CreateOwnerRequest
+	var json UpdateOwnerRequest
 	if err := ctx.ShouldBindJSON(&json); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.String(http.StatusOK, "UpdateOwner")
+
+	// Fetch the owner we would like to update
+	own := database.Owner{}
+	if result := r.DB.First(&own, json.Owner_ID); result.Error != nil {
+		resJson := OwnerResponse{
+			Success: false,
+			Error:   nil,
+		}
+		ctx.JSON(http.StatusBadRequest, resJson)
+		return
+	}
+
+	own.First_Name = json.First_Name
+	own.Last_Name = json.Last_Name
+	own.Email_Address = json.Email_Address
+	own.Zip_Code = json.Zip_Code
+
+	resJson := OwnerResponse{
+		Success: true,
+		Error:   nil,
+	}
+	ctx.JSON(http.StatusOK, resJson)
 }
 
