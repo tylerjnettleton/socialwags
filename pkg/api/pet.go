@@ -71,9 +71,9 @@ func (c *Router) CreatePet(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resJson)
 }
 
-// Get a specific
-// @Summary Get a specific
-// @Description Get a specific
+// Get a specific pet
+// @Summary Get a specific pet
+// @Description Get a specific pet
 // @Tags Pet
 // @Accept  json
 // @Produce  json
@@ -100,6 +100,15 @@ func (r *Router) GetPet(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, pet)
 }
 
+// Delete a specific pet
+// @Summary Delete a specific pet
+// @Description Delete a specific pet
+// @Tags Pet
+// @Accept  json
+// @Produce  json
+// @Param pet_id query uint false "Pet ID"
+// @Success 200
+// @Router /pet [delete]
 func (r *Router) DeletePet(ctx *gin.Context) {
 	var form DeletePetRequest
 	if err := ctx.ShouldBind(&form); err != nil {
@@ -124,6 +133,15 @@ func (r *Router) DeletePet(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resJson)
 }
 
+// Update pet
+// @Summary Update pet
+// @Description Update pet
+// @Tags Pet
+// @Accept  json
+// @Produce  json
+// @Param Body body api.UpdatePetRequest true "update pet request body"
+// @Success 200
+// @Router /pet [patch]
 func (r *Router) UpdatePet(ctx *gin.Context) {
 	var json UpdatePetRequest
 	if err := ctx.ShouldBindJSON(&json); err != nil {

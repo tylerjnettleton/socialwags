@@ -36,6 +36,24 @@ definitions:
     - name
     - owner_id
     type: object
+  api.UpdatePetRequest:
+    properties:
+      birth_date:
+        type: string
+      name:
+        type: string
+      owner_id:
+        type: integer
+      pet_ID:
+        type: integer
+      picture_URL:
+        type: string
+    required:
+    - birth_date
+    - name
+    - owner_id
+    - pet_ID
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -118,10 +136,10 @@ paths:
       tags:
       - Owner
   /pet:
-    get:
+    delete:
       consumes:
       - application/json
-      description: Get a specific
+      description: Delete a specific pet
       parameters:
       - description: Pet ID
         in: query
@@ -131,7 +149,41 @@ paths:
       - application/json
       responses:
         "200": {}
-      summary: Get a specific
+      summary: Delete a specific pet
+      tags:
+      - Pet
+    get:
+      consumes:
+      - application/json
+      description: Get a specific pet
+      parameters:
+      - description: Pet ID
+        in: query
+        name: pet_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Get a specific pet
+      tags:
+      - Pet
+    patch:
+      consumes:
+      - application/json
+      description: Update pet
+      parameters:
+      - description: update pet request body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/api.UpdatePetRequest'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Update pet
       tags:
       - Pet
     put:

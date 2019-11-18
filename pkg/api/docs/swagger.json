@@ -121,7 +121,7 @@
         },
         "/pet": {
             "get": {
-                "description": "Get a specific",
+                "description": "Get a specific pet",
                 "consumes": [
                     "application/json"
                 ],
@@ -131,7 +131,7 @@
                 "tags": [
                     "Pet"
                 ],
-                "summary": "Get a specific",
+                "summary": "Get a specific pet",
                 "parameters": [
                     {
                         "type": "integer",
@@ -164,6 +164,57 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/api.CreatePetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            },
+            "delete": {
+                "description": "Delete a specific pet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pet"
+                ],
+                "summary": "Delete a specific pet",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Pet ID",
+                        "name": "pet_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            },
+            "patch": {
+                "description": "Update pet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pet"
+                ],
+                "summary": "Update pet",
+                "parameters": [
+                    {
+                        "description": "update pet request body",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.UpdatePetRequest"
                         }
                     }
                 ],
@@ -219,6 +270,32 @@
                     "type": "string"
                 },
                 "owner_id": {
+                    "type": "integer"
+                },
+                "picture_URL": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.UpdatePetRequest": {
+            "type": "object",
+            "required": [
+                "birth_date",
+                "name",
+                "owner_id",
+                "pet_ID"
+            ],
+            "properties": {
+                "birth_date": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner_id": {
+                    "type": "integer"
+                },
+                "pet_ID": {
                     "type": "integer"
                 },
                 "picture_URL": {
