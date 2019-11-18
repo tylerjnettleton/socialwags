@@ -10,18 +10,18 @@ import (
 )
 
 type OwnerResponse struct {
-	Success bool `json:"success"`
-	Error error `json:"error"`
+	Success bool  `json:"success"`
+	Error   error `json:"error"`
 }
 
 // Binding for Owner requests
 type CreateOwnerRequest struct {
-	First_Name string `json:"first_name" binding:"required"`
-	Last_Name string `json:"last_name" binding:"required"`
+	First_Name    string `json:"first_name" binding:"required"`
+	Last_Name     string `json:"last_name" binding:"required"`
 	Email_Address string `json:"email_address" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Zip_Code uint `json:"zip_code" binding:"required"`
-	Picture_Data string `json:"picture_data" binding:"-"`
+	Password      string `json:"password" binding:"required"`
+	Zip_Code      uint   `json:"zip_code" binding:"required"`
+	Picture_Data  string `json:"picture_data" binding:"-"`
 }
 
 type UpdateOwnerRequest struct {
@@ -59,12 +59,12 @@ func (r *Router) CreateOwner(ctx *gin.Context) {
 	hashedPassword, _ := password.HashPassword([]byte(request.Password), salt)
 
 	o := &database.Owner{
-		First_Name: request.First_Name,
-		Last_Name: request.Last_Name,
+		First_Name:    request.First_Name,
+		Last_Name:     request.Last_Name,
 		Email_Address: request.Email_Address,
-		Zip_Code: request.Zip_Code,
-		Salt: hex.EncodeToString(salt),
-		Password: hex.EncodeToString(hashedPassword),
+		Zip_Code:      request.Zip_Code,
+		Salt:          hex.EncodeToString(salt),
+		Password:      hex.EncodeToString(hashedPassword),
 	}
 
 	if result := r.DB.Create(o); result.Error != nil {
@@ -99,7 +99,6 @@ func (r *Router) CreateOwner(ctx *gin.Context) {
 // @Success 200
 // @Router /owner [get]
 func (r *Router) GetOwner(ctx *gin.Context) {
-
 	var form GetOwnerRequest
 	if err := ctx.ShouldBind(&form); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -107,7 +106,7 @@ func (r *Router) GetOwner(ctx *gin.Context) {
 	}
 
 	own := database.Owner{}
-	if result := r.DB.First(&own, form.Owner_ID); result.Error != nil {
+	if result := r.DB.Preload("Pets").First(&own, form.Owner_ID); result.Error != nil {
 		resJson := OwnerResponse{
 			Success: false,
 			Error:   nil,
@@ -161,7 +160,7 @@ func (r *Router) DeleteOwner(ctx *gin.Context) {
 // @Param Body body api.CreateOwnerRequest true "Update user body"
 // @Success 200
 // @Router /owner [patch]
-func (r *Router)UpdateOwner(ctx *gin.Context) {
+func (r *Router) UpdateOwner(ctx *gin.Context) {
 	var json UpdateOwnerRequest
 	if err := ctx.ShouldBindJSON(&json); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -184,10 +183,18 @@ func (r *Router)UpdateOwner(ctx *gin.Context) {
 	own.Email_Address = json.Email_Address
 	own.Zip_Code = json.Zip_Code
 
+	if result := r.DB.Update(&own); result.Error != nil {
+		resJson := OwnerResponse{
+			Success: false,
+			Error:   nil,
+		}
+		ctx.JSON(http.StatusBadRequest, resJson)
+		return
+	}
+
 	resJson := OwnerResponse{
 		Success: true,
 		Error:   nil,
 	}
 	ctx.JSON(http.StatusOK, resJson)
 }
-

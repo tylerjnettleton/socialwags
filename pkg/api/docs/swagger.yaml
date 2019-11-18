@@ -16,20 +16,25 @@ definitions:
         type: integer
     required:
     - email_address
+    - first_name
     - last_name
     - password
     - zip_code
     type: object
-  database.Pet:
+  api.CreatePetRequest:
     properties:
-      birth_Date:
+      birth_date:
         type: string
       name:
         type: string
-      ownerID:
+      owner_id:
         type: integer
       picture_URL:
         type: string
+    required:
+    - birth_date
+    - name
+    - owner_id
     type: object
 host: localhost:8080
 info:
@@ -112,4 +117,39 @@ paths:
       summary: Create a new owner account
       tags:
       - Owner
+  /pet:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific
+      parameters:
+      - description: Pet ID
+        in: query
+        name: pet_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Get a specific
+      tags:
+      - Pet
+    put:
+      consumes:
+      - application/json
+      description: Create a new pet
+      parameters:
+      - description: Create pet request body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreatePetRequest'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Create a new pet
+      tags:
+      - Pet
 swagger: "2.0"

@@ -11,7 +11,7 @@ import (
 	"github.com/tylerjnettleton/socialwags/pkg/database"
 )
 
-func main ()  {
+func main() {
 
 	// Gorm
 	db, err := gorm.Open("sqlite3", "socialwags.db")
@@ -27,7 +27,6 @@ func main ()  {
 	db.AutoMigrate(&database.Comment{})
 	db.AutoMigrate(&database.Pack{})
 	db.AutoMigrate(&database.Pack_Message{})
-
 
 	// Setup our router
 	r := gin.Default()
@@ -67,9 +66,9 @@ func main ()  {
 			post.PATCH("", router.UpdatePost)
 		}
 
-
 	}
 
+	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Run()

@@ -118,6 +118,59 @@
                     "200": {}
                 }
             }
+        },
+        "/pet": {
+            "get": {
+                "description": "Get a specific",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pet"
+                ],
+                "summary": "Get a specific",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Pet ID",
+                        "name": "pet_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            },
+            "put": {
+                "description": "Create a new pet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pet"
+                ],
+                "summary": "Create a new pet",
+                "parameters": [
+                    {
+                        "description": "Create pet request body",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreatePetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            }
         }
     },
     "definitions": {
@@ -125,6 +178,7 @@
             "type": "object",
             "required": [
                 "email_address",
+                "first_name",
                 "last_name",
                 "password",
                 "zip_code"
@@ -150,16 +204,21 @@
                 }
             }
         },
-        "database.Pet": {
+        "api.CreatePetRequest": {
             "type": "object",
+            "required": [
+                "birth_date",
+                "name",
+                "owner_id"
+            ],
             "properties": {
-                "birth_Date": {
+                "birth_date": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "ownerID": {
+                "owner_id": {
                     "type": "integer"
                 },
                 "picture_URL": {
