@@ -27,12 +27,7 @@ type Owner struct {
 	Packs         []Pack
 }
 
-type OwnerResponse struct {
-	Success bool  `json:"success"`
-	Error   error `json:"error"`
-}
-
-// Binding for Owner requests
+// Gin Bindings
 type CreateOwnerRequest struct {
 	First_Name    string `json:"first_name" binding:"required"`
 	Last_Name     string `json:"last_name" binding:"required"`
@@ -91,7 +86,7 @@ func (r *Router) CreateOwner(ctx *gin.Context) {
 			fmt.Println(err)
 		}
 		// Todo: Do better error handling with json response
-		resJson := OwnerResponse{
+		resJson := Response{
 			Success: false,
 			Error:   nil,
 		}
@@ -99,7 +94,7 @@ func (r *Router) CreateOwner(ctx *gin.Context) {
 		return
 	}
 
-	resJson := OwnerResponse{
+	resJson := Response{
 		Success: true,
 		Error:   nil,
 	}
@@ -125,7 +120,7 @@ func (r *Router) GetOwner(ctx *gin.Context) {
 
 	own := Owner{}
 	if result := database.DB().Preload("Pets").First(&own, form.Owner_ID); result.Error != nil {
-		resJson := OwnerResponse{
+		resJson := Response{
 			Success: false,
 			Error:   nil,
 		}
@@ -154,7 +149,7 @@ func (r *Router) DeleteOwner(ctx *gin.Context) {
 
 	own := Owner{}
 	if result := database.DB().Delete(&own, form.Owner_ID); result.Error != nil {
-		resJson := OwnerResponse{
+		resJson := Response{
 			Success: false,
 			Error:   nil,
 		}
@@ -162,7 +157,7 @@ func (r *Router) DeleteOwner(ctx *gin.Context) {
 		return
 	}
 
-	resJson := OwnerResponse{
+	resJson := Response{
 		Success: true,
 		Error:   nil,
 	}
@@ -175,7 +170,7 @@ func (r *Router) DeleteOwner(ctx *gin.Context) {
 // @Tags Owner
 // @Accept  json
 // @Produce  json
-// @Param Body body api.CreateOwnerRequest true "Update user body"
+// @Param Body body api.UpdateOwnerRequest true "Update user body"
 // @Success 200
 // @Router /owner [patch]
 func (r *Router) UpdateOwner(ctx *gin.Context) {
@@ -188,11 +183,12 @@ func (r *Router) UpdateOwner(ctx *gin.Context) {
 	// Fetch the owner we would like to update
 	own := Owner{}
 	if result := database.DB().First(&own, json.Owner_ID); result.Error != nil {
-		resJson := OwnerResponse{
+		res := Response{
 			Success: false,
+			Object:  nil,
 			Error:   nil,
 		}
-		ctx.JSON(http.StatusBadRequest, resJson)
+		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
 
@@ -202,17 +198,19 @@ func (r *Router) UpdateOwner(ctx *gin.Context) {
 	own.Zip_Code = json.Zip_Code
 
 	if result := database.DB().Update(&own); result.Error != nil {
-		resJson := OwnerResponse{
+		res := Response{
 			Success: false,
+			Object:  nil,
 			Error:   nil,
 		}
-		ctx.JSON(http.StatusBadRequest, resJson)
+		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
 
-	resJson := OwnerResponse{
+	res := Response{
 		Success: true,
+		Object:  nil,
 		Error:   nil,
 	}
-	ctx.JSON(http.StatusOK, resJson)
+	ctx.JSON(http.StatusOK, res)
 }

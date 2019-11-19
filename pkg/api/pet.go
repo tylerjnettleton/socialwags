@@ -15,11 +15,6 @@ type Pet struct {
 	Picture_URL string
 }
 
-type PetResponse struct {
-	Success bool  `json:"success"`
-	Error   error `json:"error"`
-}
-
 type CreatePetRequest struct {
 	Owner_ID    uint   `json:"owner_id" binding:"required"`
 	Name        string `json:"name" binding:"required"`
@@ -64,7 +59,7 @@ func (c *Router) CreatePet(ctx *gin.Context) {
 	}
 
 	if result := database.DB().Create(&pet); result.Error != nil {
-		resJson := PetResponse{
+		resJson := Response{
 			Success: false,
 			Error:   nil,
 		}
@@ -72,7 +67,7 @@ func (c *Router) CreatePet(ctx *gin.Context) {
 		return
 	}
 
-	resJson := OwnerResponse{
+	resJson := Response{
 		Success: true,
 		Error:   nil,
 	}
@@ -95,17 +90,23 @@ func (r *Router) GetPet(ctx *gin.Context) {
 		return
 	}
 
-	pet := Pet{}
-	if result := database.DB().First(&pet, form.Pet_ID); result.Error != nil {
-		resJson := PetResponse{
+	p := Pet{}
+	if result := database.DB().First(&p, form.Pet_ID); result.Error != nil {
+		res := Response{
 			Success: false,
+			Object:  nil,
 			Error:   nil,
 		}
-		ctx.JSON(http.StatusBadRequest, resJson)
+		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, pet)
+	res := Response{
+		Success: true,
+		Object:  p,
+		Error:   nil,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 // Delete a specific pet
@@ -126,7 +127,7 @@ func (r *Router) DeletePet(ctx *gin.Context) {
 
 	pet := Pet{}
 	if result := database.DB().Delete(&pet, form.Pet_ID); result.Error != nil {
-		resJson := PetResponse{
+		resJson := Response{
 			Success: false,
 			Error:   nil,
 		}
@@ -134,7 +135,7 @@ func (r *Router) DeletePet(ctx *gin.Context) {
 		return
 	}
 
-	resJson := PetResponse{
+	resJson := Response{
 		Success: true,
 		Error:   nil,
 	}
@@ -160,7 +161,7 @@ func (r *Router) UpdatePet(ctx *gin.Context) {
 	// Fetch the owner we would like to update
 	pet := Pet{}
 	if result := database.DB().First(&pet, json.Owner_ID); result.Error != nil {
-		resJson := PetResponse{
+		resJson := Response{
 			Success: false,
 			Error:   nil,
 		}
@@ -173,7 +174,7 @@ func (r *Router) UpdatePet(ctx *gin.Context) {
 	pet.Picture_URL = json.Picture_URL
 
 	if result := database.DB().Update(&pet); result.Error != nil {
-		resJson := PetResponse{
+		resJson := Response{
 			Success: false,
 			Error:   nil,
 		}
@@ -181,7 +182,7 @@ func (r *Router) UpdatePet(ctx *gin.Context) {
 		return
 	}
 
-	resJson := PetResponse{
+	resJson := Response{
 		Success: true,
 		Error:   nil,
 	}

@@ -110,7 +110,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.CreateOwnerRequest"
+                            "$ref": "#/definitions/api.UpdateOwnerRequest"
                         }
                     }
                 ],
@@ -222,6 +222,110 @@
                     "200": {}
                 }
             }
+        },
+        "/post": {
+            "get": {
+                "description": "Get a specific post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get a specific post",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Post ID",
+                        "name": "post_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            },
+            "put": {
+                "description": "Create a new post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Create a new post",
+                "parameters": [
+                    {
+                        "description": "Create post request body",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreatePostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            },
+            "delete": {
+                "description": "Delete a specific post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Delete a specific post",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Post ID",
+                        "name": "post_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            },
+            "patch": {
+                "description": "Update a specific post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Update a specific post",
+                "parameters": [
+                    {
+                        "description": "Update post body",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.UpdatePostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            }
         }
     },
     "definitions": {
@@ -277,6 +381,63 @@
                 }
             }
         },
+        "api.CreatePostRequest": {
+            "type": "object",
+            "required": [
+                "body",
+                "owner_id",
+                "post_type",
+                "title"
+            ],
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "owner_id": {
+                    "type": "integer"
+                },
+                "post_type": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.UpdateOwnerRequest": {
+            "type": "object",
+            "required": [
+                "email_address",
+                "first_name",
+                "last_name",
+                "owner_ID",
+                "password",
+                "zip_code"
+            ],
+            "properties": {
+                "email_address": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "owner_ID": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "picture_data": {
+                    "type": "string"
+                },
+                "zip_code": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.UpdatePetRequest": {
             "type": "object",
             "required": [
@@ -299,6 +460,25 @@
                     "type": "integer"
                 },
                 "picture_URL": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.UpdatePostRequest": {
+            "type": "object",
+            "required": [
+                "body",
+                "post_ID",
+                "title"
+            ],
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "post_ID": {
+                    "type": "integer"
+                },
+                "title": {
                     "type": "string"
                 }
             }

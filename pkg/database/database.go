@@ -4,6 +4,7 @@ import (
 	"bb.commandscape.com/cmd/commandscape/global/pkg/log"
 	"errors"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"time"
 )
 

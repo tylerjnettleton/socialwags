@@ -8,6 +8,12 @@ import (
 type Router struct {
 }
 
+type Response struct {
+	Success bool        `json:"success"`
+	Object  interface{} `json:"object"`
+	Error   error       `json:"error"`
+}
+
 // @title SocialWags API
 // @version 1.0
 // @description API documentation for the socialwags platform

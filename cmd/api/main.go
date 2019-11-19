@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/swaggo/files"       // swagger embed files
 	"github.com/swaggo/gin-swagger" // gin-swagger middleware
 	"github.com/tylerjnettleton/socialwags/pkg/api"
@@ -12,25 +11,24 @@ import (
 
 func main() {
 
-	// Gorm
+	// Config and connect our database
 	dbConfg := database.DatabaseConfig{Name: "socialwags.db"}
 	err := database.Connect(dbConfg, 3)
 
 	if err != nil {
 		panic("failed to connect database")
 	}
-
 	defer database.DB().Close()
 
 	// Setup our router
 	r := gin.Default()
-
 	router, err := api.NewRouter()
 
 	if err != nil {
 		panic("Failed to create http router")
 	}
 
+	// Setup our routes
 	v1 := r.Group("/api/v1")
 	{
 		// Owner endpoints
@@ -59,12 +57,10 @@ func main() {
 			post.DELETE("", router.DeletePost)
 			post.PATCH("", router.UpdatePost)
 		}
-
 	}
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Run()
-
 }

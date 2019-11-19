@@ -36,6 +36,46 @@ definitions:
     - name
     - owner_id
     type: object
+  api.CreatePostRequest:
+    properties:
+      body:
+        type: string
+      owner_id:
+        type: integer
+      post_type:
+        type: integer
+      title:
+        type: string
+    required:
+    - body
+    - owner_id
+    - post_type
+    - title
+    type: object
+  api.UpdateOwnerRequest:
+    properties:
+      email_address:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      owner_ID:
+        type: integer
+      password:
+        type: string
+      picture_data:
+        type: string
+      zip_code:
+        type: integer
+    required:
+    - email_address
+    - first_name
+    - last_name
+    - owner_ID
+    - password
+    - zip_code
+    type: object
   api.UpdatePetRequest:
     properties:
       birth_date:
@@ -53,6 +93,19 @@ definitions:
     - name
     - owner_id
     - pet_ID
+    type: object
+  api.UpdatePostRequest:
+    properties:
+      body:
+        type: string
+      post_ID:
+        type: integer
+      title:
+        type: string
+    required:
+    - body
+    - post_ID
+    - title
     type: object
 host: localhost:8080
 info:
@@ -109,7 +162,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/api.CreateOwnerRequest'
+          $ref: '#/definitions/api.UpdateOwnerRequest'
       produces:
       - application/json
       responses:
@@ -204,4 +257,73 @@ paths:
       summary: Create a new pet
       tags:
       - Pet
+  /post:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific post
+      parameters:
+      - description: Post ID
+        in: query
+        name: post_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Delete a specific post
+      tags:
+      - Post
+    get:
+      consumes:
+      - application/json
+      description: Get a specific post
+      parameters:
+      - description: Post ID
+        in: query
+        name: post_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Get a specific post
+      tags:
+      - Post
+    patch:
+      consumes:
+      - application/json
+      description: Update a specific post
+      parameters:
+      - description: Update post body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/api.UpdatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Update a specific post
+      tags:
+      - Post
+    put:
+      consumes:
+      - application/json
+      description: Create a new post
+      parameters:
+      - description: Create post request body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Create a new post
+      tags:
+      - Post
 swagger: "2.0"
