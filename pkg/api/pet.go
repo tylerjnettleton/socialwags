@@ -2,10 +2,18 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/tylerjnettleton/socialwags/pkg/database"
-	_ "github.com/tylerjnettleton/socialwags/pkg/database"
 	"net/http"
 )
+
+type Pet struct {
+	gorm.Model
+	OwnerID     uint
+	Name        string
+	Birth_Date  string
+	Picture_URL string
+}
 
 type PetResponse struct {
 	Success bool  `json:"success"`
@@ -48,14 +56,14 @@ func (c *Router) CreatePet(ctx *gin.Context) {
 		return
 	}
 
-	pet := database.Pet{
+	pet := Pet{
 		OwnerID:     request.Owner_ID,
 		Name:        request.Name,
 		Birth_Date:  request.Birth_Date,
 		Picture_URL: request.Picture_URL,
 	}
 
-	if result := c.DB.Create(&pet); result.Error != nil {
+	if result := database.DB().Create(&pet); result.Error != nil {
 		resJson := PetResponse{
 			Success: false,
 			Error:   nil,
@@ -87,8 +95,8 @@ func (r *Router) GetPet(ctx *gin.Context) {
 		return
 	}
 
-	pet := database.Pet{}
-	if result := r.DB.First(&pet, form.Pet_ID); result.Error != nil {
+	pet := Pet{}
+	if result := database.DB().First(&pet, form.Pet_ID); result.Error != nil {
 		resJson := PetResponse{
 			Success: false,
 			Error:   nil,
@@ -116,8 +124,8 @@ func (r *Router) DeletePet(ctx *gin.Context) {
 		return
 	}
 
-	pet := database.Pet{}
-	if result := r.DB.Delete(&pet, form.Pet_ID); result.Error != nil {
+	pet := Pet{}
+	if result := database.DB().Delete(&pet, form.Pet_ID); result.Error != nil {
 		resJson := PetResponse{
 			Success: false,
 			Error:   nil,
@@ -150,8 +158,8 @@ func (r *Router) UpdatePet(ctx *gin.Context) {
 	}
 
 	// Fetch the owner we would like to update
-	pet := database.Pet{}
-	if result := r.DB.First(&pet, json.Owner_ID); result.Error != nil {
+	pet := Pet{}
+	if result := database.DB().First(&pet, json.Owner_ID); result.Error != nil {
 		resJson := PetResponse{
 			Success: false,
 			Error:   nil,
@@ -164,7 +172,7 @@ func (r *Router) UpdatePet(ctx *gin.Context) {
 	pet.Birth_Date = json.Birth_Date
 	pet.Picture_URL = json.Picture_URL
 
-	if result := r.DB.Update(&pet); result.Error != nil {
+	if result := database.DB().Update(&pet); result.Error != nil {
 		resJson := PetResponse{
 			Success: false,
 			Error:   nil,

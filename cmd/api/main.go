@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/swaggo/files"       // swagger embed files
 	"github.com/swaggo/gin-swagger" // gin-swagger middleware
@@ -14,24 +13,19 @@ import (
 func main() {
 
 	// Gorm
-	db, err := gorm.Open("sqlite3", "socialwags.db")
+	dbConfg := database.DatabaseConfig{Name: "socialwags.db"}
+	err := database.Connect(dbConfg, 3)
+
 	if err != nil {
 		panic("failed to connect database")
 	}
-	defer db.Close()
 
-	// Migrate the schema
-	db.AutoMigrate(&database.Owner{})
-	db.AutoMigrate(&database.Pet{})
-	db.AutoMigrate(&database.Post{})
-	db.AutoMigrate(&database.Comment{})
-	db.AutoMigrate(&database.Pack{})
-	db.AutoMigrate(&database.Pack_Message{})
+	defer database.DB().Close()
 
 	// Setup our router
 	r := gin.Default()
 
-	router, err := api.NewRouter(db)
+	router, err := api.NewRouter()
 
 	if err != nil {
 		panic("Failed to create http router")

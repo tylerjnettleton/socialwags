@@ -1,10 +1,10 @@
-package password
+package crypto
 
 import (
 	"testing"
 )
 
-func init () {
+func init() {
 
 }
 

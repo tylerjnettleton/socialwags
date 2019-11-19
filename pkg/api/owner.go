@@ -4,10 +4,28 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"github.com/tylerjnettleton/socialwags/pkg/crypto"
 	"github.com/tylerjnettleton/socialwags/pkg/database"
-	"github.com/tylerjnettleton/socialwags/pkg/password"
 	"net/http"
+	"time"
 )
+
+type Owner struct {
+	gorm.Model
+	Email_Address string `gorm:"unique;not null"`
+	Password      string
+	Salt          string
+	First_Name    string `gorm:"not null"`
+	Last_Name     string `gorm:"not null"`
+	Picture_URL   string
+	Zip_Code      uint `gorm:"not null"`
+	Time          time.Time
+	TimeZone      string
+	Pets          []Pet
+	Posts         []Post
+	Packs         []Pack
+}
 
 type OwnerResponse struct {
 	Success bool  `json:"success"`
@@ -24,12 +42,12 @@ type CreateOwnerRequest struct {
 	Picture_Data  string `json:"picture_data" binding:"-"`
 }
 
-type UpdateOwnerRequest struct {
-	CreateOwnerRequest
+type GetOwnerRequest struct {
 	Owner_ID uint `form:"owner_id" binding:"required"`
 }
 
-type GetOwnerRequest struct {
+type UpdateOwnerRequest struct {
+	CreateOwnerRequest
 	Owner_ID uint `form:"owner_id" binding:"required"`
 }
 
@@ -55,10 +73,10 @@ func (r *Router) CreateOwner(ctx *gin.Context) {
 	}
 
 	// Let's create a salt and hash the users password before we store it in the database
-	salt, _ := password.RandBytes()
-	hashedPassword, _ := password.HashPassword([]byte(request.Password), salt)
+	salt, _ := crypto.RandBytes()
+	hashedPassword, _ := crypto.HashPassword([]byte(request.Password), salt)
 
-	o := &database.Owner{
+	o := &Owner{
 		First_Name:    request.First_Name,
 		Last_Name:     request.Last_Name,
 		Email_Address: request.Email_Address,
@@ -67,7 +85,7 @@ func (r *Router) CreateOwner(ctx *gin.Context) {
 		Password:      hex.EncodeToString(hashedPassword),
 	}
 
-	if result := r.DB.Create(o); result.Error != nil {
+	if result := database.DB().Create(o); result.Error != nil {
 		errors := result.GetErrors()
 		for _, err := range errors {
 			fmt.Println(err)
@@ -105,8 +123,8 @@ func (r *Router) GetOwner(ctx *gin.Context) {
 		return
 	}
 
-	own := database.Owner{}
-	if result := r.DB.Preload("Pets").First(&own, form.Owner_ID); result.Error != nil {
+	own := Owner{}
+	if result := database.DB().Preload("Pets").First(&own, form.Owner_ID); result.Error != nil {
 		resJson := OwnerResponse{
 			Success: false,
 			Error:   nil,
@@ -134,8 +152,8 @@ func (r *Router) DeleteOwner(ctx *gin.Context) {
 		return
 	}
 
-	own := database.Owner{}
-	if result := r.DB.Delete(&own, form.Owner_ID); result.Error != nil {
+	own := Owner{}
+	if result := database.DB().Delete(&own, form.Owner_ID); result.Error != nil {
 		resJson := OwnerResponse{
 			Success: false,
 			Error:   nil,
@@ -168,8 +186,8 @@ func (r *Router) UpdateOwner(ctx *gin.Context) {
 	}
 
 	// Fetch the owner we would like to update
-	own := database.Owner{}
-	if result := r.DB.First(&own, json.Owner_ID); result.Error != nil {
+	own := Owner{}
+	if result := database.DB().First(&own, json.Owner_ID); result.Error != nil {
 		resJson := OwnerResponse{
 			Success: false,
 			Error:   nil,
@@ -183,7 +201,7 @@ func (r *Router) UpdateOwner(ctx *gin.Context) {
 	own.Email_Address = json.Email_Address
 	own.Zip_Code = json.Zip_Code
 
-	if result := r.DB.Update(&own); result.Error != nil {
+	if result := database.DB().Update(&own); result.Error != nil {
 		resJson := OwnerResponse{
 			Success: false,
 			Error:   nil,

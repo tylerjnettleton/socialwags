@@ -2,11 +2,10 @@ package api
 
 import (
 	"errors"
-	"github.com/jinzhu/gorm"
+	"github.com/tylerjnettleton/socialwags/pkg/database"
 )
 
 type Router struct {
-	DB *gorm.DB
 }
 
 // @title SocialWags API
@@ -20,12 +19,19 @@ type Router struct {
 
 // @host localhost:8080
 // @BasePath /api/v1
-func NewRouter(db *gorm.DB) (router *Router, err error) {
-	if db == nil {
+func NewRouter() (router *Router, err error) {
+	if database.DB() == nil {
 		err := errors.New("emit macho dwarf: elf header corrupted")
 		return nil, err
 	}
-	return &Router{
-		DB: db,
-	}, nil
+
+	// Migrate the schema
+	database.DB().AutoMigrate(&Owner{})
+	database.DB().AutoMigrate(&Pet{})
+	database.DB().AutoMigrate(&Post{})
+	database.DB().AutoMigrate(&Comment{})
+	database.DB().AutoMigrate(&Pack{})
+	database.DB().AutoMigrate(&Pack_Message{})
+
+	return &Router{}, nil
 }
